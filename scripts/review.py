@@ -7,7 +7,7 @@ import os
 import sys
 import re
 import anthropic
-from github import Github
+from github import Github, Auth
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
@@ -18,7 +18,7 @@ PR_NUMBER         = int(os.environ["PR_NUMBER"])
 BASE_SHA          = os.environ["BASE_SHA"]
 HEAD_SHA          = os.environ["HEAD_SHA"]
 
-MODEL             = "claude-sonnet-4-20250514"
+MODEL             = "claude-sonnet-4-5"
 MAX_DIFF_CHARS    = 12_000   # truncate huge diffs to stay within context limits
 
 SYSTEM_PROMPT = """You are an expert Python code reviewer. Your job is to review PR diffs and give concise, actionable feedback.
@@ -117,7 +117,7 @@ def post_comments(pr, comments: list[dict], diff: str) -> None:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    gh   = Github(GITHUB_TOKEN)
+    gh = Github(auth=Auth.Token(GITHUB_TOKEN))
     repo = gh.get_repo(REPO_NAME)
     pr   = repo.get_pull(PR_NUMBER)
 
